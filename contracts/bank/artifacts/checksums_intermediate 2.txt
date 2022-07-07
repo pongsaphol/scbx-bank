@@ -1,0 +1,1 @@
+6cd4cc5d97b17b401ce8a7aa6adca11db71b6ecd48ad5aa12b3386a3ad6ac6fa  ./target/wasm32-unknown-unknown/release/bank.wasm

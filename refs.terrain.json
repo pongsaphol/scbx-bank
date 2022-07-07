@@ -1,0 +1,10 @@
+{
+  "testnet": {
+    "bank": {
+      "codeId": "1812",
+      "contractAddresses": {
+        "default": "terra1ll73q330keasce8l9vrcg5064tdlzzm0ljtyd3xrhruqcu006s7qp63mxh"
+      }
+    }
+  }
+}
