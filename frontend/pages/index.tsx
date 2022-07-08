@@ -13,22 +13,17 @@ import { useHook } from "../hooks/useHook";
 
 const AddAccount = () => {
   const [name, setName] = useState("");
-  const { setPage, setError, prefetch } = useHook();
+  const { setPage, prefetch, setUpdate } = useHook();
   const connectedWallet = useConnectedWallet();
   const onClickName = async () => {
     if (connectedWallet) {
       try {
+        setUpdate(true);
         await execute.add_account(connectedWallet, name);
-        setName("");
         prefetch();
-        setPage({ name: "Account" });
-      } catch (e) {
-        setName("");
-        setError({
-          title: "Account already exists",
-          message: "Please use another name",
-        });
-      }
+      } catch (e) {}
+      setPage({ name: "Account" });
+      setUpdate(false);
     }
   };
   return (
@@ -110,40 +105,15 @@ const Account = () => {
         <p className="text-lg">My Accounts: {balance} TOKEN</p>
       </div>
       <div className="flex flex-col w-full max-w-3xl items-center">
-        {update ? (
-          <svg
-            className="animate-spin -ml-1 mr-3 h-10 w-10 text-gray-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        ) : (
-          <>
-            {account.map((item: any) => (
-              <AccountCard {...item} />
-            ))}
-            <button
-              className="flex flex-col border border-gray-300 w-full my-4 h-36 items-center justify-center hover:bg-gray-100"
-              onClick={() => setPage({ name: "AddAccount", account: null })}
-            >
-              <p className="font-semibold text-xl">+ Create Bank Account</p>
-            </button>
-          </>
-        )}
+        {account.map((item: any) => (
+          <AccountCard {...item} />
+        ))}
+        <button
+          className="flex flex-col border border-gray-300 w-full my-4 h-36 items-center justify-center hover:bg-gray-100"
+          onClick={() => setPage({ name: "AddAccount", account: null })}
+        >
+          <p className="font-semibold text-xl">+ Create Bank Account</p>
+        </button>
       </div>
     </div>
   );
@@ -151,22 +121,17 @@ const Account = () => {
 
 const Deposit = ({ account }) => {
   const [balance, setBalance] = useState(null);
-  const { setPage, setError, prefetch } = useHook();
+  const { setPage, setUpdate, prefetch } = useHook();
   const connectedWallet = useConnectedWallet();
   const onClickName = async () => {
     if (connectedWallet) {
       try {
+        setUpdate(true);
         await execute.deposit(connectedWallet, balance, account);
-        setBalance(null);
         prefetch();
-        setPage({ name: "Account" });
-      } catch (e) {
-        setBalance(null);
-        setError({
-          title: "Deposit Error",
-          message: "Insufficient balance",
-        });
-      }
+      } catch (e) {}
+      setPage({ name: "Account" });
+      setUpdate(false);
     }
   };
   return (
@@ -211,22 +176,17 @@ const Deposit = ({ account }) => {
 
 const Withdraw = ({ account }) => {
   const [balance, setBalance] = useState(null);
-  const { setPage, setError, prefetch } = useHook();
+  const { setPage, setUpdate, prefetch } = useHook();
   const connectedWallet = useConnectedWallet();
   const onClickName = async () => {
     if (connectedWallet) {
       try {
+        setUpdate(true);
         await execute.withdraw(connectedWallet, balance, account);
-        setBalance(null);
         prefetch();
-        setPage({ name: "Account" });
-      } catch (e) {
-        setBalance(null);
-        setError({
-          title: "Withdraw Error",
-          message: "Insufficient balance",
-        });
-      }
+      } catch (e) {}
+      setPage({ name: "Account" });
+      setUpdate(false);
     }
   };
   return (
@@ -272,7 +232,7 @@ const Withdraw = ({ account }) => {
 const Transfer = ({ account: accountFrom }) => {
   const [balance, setBalance] = useState(null);
   const [accountTo, setAccountTo] = useState(null);
-  const { setPage, setError, prefetch, account } = useHook();
+  const { setPage, setUpdate, prefetch, account } = useHook();
   const connectedWallet = useConnectedWallet();
   const feeText = useMemo(() => {
     if (balance) {
@@ -289,22 +249,17 @@ const Transfer = ({ account: accountFrom }) => {
   const onClickName = async () => {
     if (connectedWallet) {
       try {
+        setUpdate(true);
         await execute.transfer(
           connectedWallet,
           balance,
           accountFrom,
           accountTo
         );
-        setBalance(null);
         prefetch();
-        setPage({ name: "Account" });
-      } catch (e) {
-        setBalance(null);
-        setError({
-          title: "Transfer Error",
-          message: "Please check To account or balance",
-        });
-      }
+      } catch (e) {}
+      setPage({ name: "Account" });
+      setUpdate(false);
     }
   };
   return (
@@ -364,7 +319,35 @@ const Transfer = ({ account: accountFrom }) => {
 };
 
 const IndexPage = () => {
-  const { page } = useHook();
+  const { page, update } = useHook();
+
+  if (update) {
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <svg
+          className="animate-spin -ml-1 mr-3 h-10 w-10 text-gray-500 -mt-40"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <>
       {page.name === "Account" ? (

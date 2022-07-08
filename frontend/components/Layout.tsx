@@ -28,15 +28,17 @@ const Layout = ({ children }) => {
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <header>
-        <nav className="flex w-screen justify-center my-6">
-          <div className="flex w-full max-w-5xl justify-between">
-            <p className="font-bold text-3xl">🚀10XBank</p>
-            <ConnectWallet />
-          </div>
-        </nav>
-      </header>
-      <HookProvider>{children}</HookProvider>
+      <HookProvider>
+        <header>
+          <nav className="flex w-screen justify-center my-6">
+            <div className="flex w-full max-w-5xl justify-between">
+              <p className="font-bold text-3xl">🚀10XBank</p>
+              <ConnectWallet />
+            </div>
+          </nav>
+        </header>
+        {children}
+      </HookProvider>
     </WalletProvider>
   );
 };
